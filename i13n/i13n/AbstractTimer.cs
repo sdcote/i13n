@@ -9,6 +9,11 @@ namespace i13n
 
         protected readonly static ITimerMaster NULL_MASTER = new NullMaster();
 
+        /// <summary>
+        /// Flag indicating if the timer is running
+        /// </summary>
+        public bool IsRunning { get; set; }
+
         public long Accrued { get; protected set; }
 
         /// <summary>
@@ -27,6 +32,9 @@ namespace i13n
         /// </summary>
         public long StartTimeTicks { get; protected set; }
 
+        public long StartCount { get; set; }
+
+        public long StopCount { get; set; }
 
         protected AbstractTimer(ITimerMaster master) { Master = master; }
 
@@ -37,8 +45,9 @@ namespace i13n
         public override string ToString()
         {
             if (Master != null) { return Master.ToString(); }
-
             return "";
         }
+
     }
+
 }

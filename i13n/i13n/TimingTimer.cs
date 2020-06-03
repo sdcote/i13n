@@ -7,12 +7,7 @@ namespace i13n
     /// </summary>
     public class TimingTimer : AbstractTimer
     {
-        private volatile bool _isRunning = false; // are there volatile Properties?
-
-        /// <summary>
-        /// Flag indicating if the timer is running
-        /// </summary>
-        public bool IsRunning { get { return _isRunning; } }
+       
 
         /// <summary>
         /// Create a new timer with a null master.
@@ -34,7 +29,7 @@ namespace i13n
         /// <returns></returns>
         protected long TimeElapsedSinceLastStart()
         {
-            if (_isRunning) { return DateTime.Now.Ticks - StartTimeTicks; }
+            if (IsRunning) { return DateTime.Now.Ticks - StartTimeTicks; }
             else { return 0; }
         }
 
@@ -46,26 +41,26 @@ namespace i13n
         /// <param name="value">The amount to increase the accrued value.</param>
         protected void Increase(long value)
         {
-            if (_isRunning) { Accrued += value; }
+            if (IsRunning) { Accrued += value; }
         }
 
 
         public override void Start() {
-            if (!_isRunning)
+            if (!IsRunning)
             {
                 StartTimeTicks = DateTime.Now.Ticks;
-                _isRunning = true;
+                IsRunning = true;
                 Master.Start(this);
             }
         }
 
         public override void Stop() {
-            if (_isRunning)
+            if (IsRunning)
             {
                 Increase(TimeElapsedSinceLastStart());
                 Master.Increase(Accrued);
                 Master.Stop(this);
-                _isRunning = false;
+                IsRunning = false;
             }
         }
 

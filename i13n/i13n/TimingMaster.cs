@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 
 namespace i13n
 {
@@ -155,39 +156,57 @@ namespace i13n
             }
         }
 
+
         /// <summary>
         /// Start a timer in the context for this timer master.
         /// </summary>
         /// <param name="timer">The timer to start</param>
         public void Start(ITimer timer)
         {
-            activeCounter++;
-            TimingMaster.globalCounter++;
-
-            if (activeCounter > maxActive)
+            lock (this)
             {
-                maxActive = activeCounter;
-            }
+                activeCounter++;
+                TimingMaster.globalCounter++;
 
-            totalActive += activeCounter;// really?
+                if (activeCounter > maxActive)
+                {
+                    maxActive = activeCounter;
+                }
 
-            long now = DateTime.Now.Ticks;
-            lastAccessTime = now;
+                totalActive += activeCounter;// really?
 
-            if (isFirstAccess)
-            {
-                isFirstAccess = false;
-                firstAccessTime = now;
+                long now = DateTime.Now.Ticks;
+                lastAccessTime = now;
+
+                if (isFirstAccess)
+                {
+                    isFirstAccess = false;
+                    firstAccessTime = now;
+                }
+                timer.StartCount++;
             }
         }
 
-        public void Stop(ITimer mon)
+        /// <summary>
+        /// Stop a timer in the context for this timer master.
+        /// </summary>
+        /// <param name="timer">The timer to stop</param>
+        public void Stop(ITimer timer)
         {
-            activeCounter--;
-            TimingMaster.globalCounter--;
-            accrued += mon.Accrued;
+            lock (this)
+            {
+                activeCounter--;
+                TimingMaster.globalCounter--;
+                accrued += timer.Accrued;
+                timer.StopCount++;
+            }
         }
 
+
+        /// <summary>
+        /// Create a timer associated with this master.
+        /// </summary>
+        /// <returns>A new, unstarted timer.</returns>
         public ITimer CreateTimer()
         {
             ITimer retval;
@@ -204,6 +223,10 @@ namespace i13n
         }
 
 
+        /// <summary>
+        /// Display the master timer data in a human readable format.
+        /// </summary>
+        /// <returns>Nicely formatted timer data.</returns>
         public override string ToString()
         {
             StringBuilder message = new StringBuilder(Name);
@@ -212,7 +235,7 @@ namespace i13n
 
             if ((hits - activeCounter) > 0)
             {
-                message.Append(getDisplayString(TimingMaster.AVG, ConvertToString(AverageTime/TICKS_PER_MILLISECOND), TimingMaster.MILLISECONDS));
+                message.Append(getDisplayString(TimingMaster.AVG, ConvertToString(AverageTime / TICKS_PER_MILLISECOND), TimingMaster.MILLISECONDS));
                 message.Append(getDisplayString(TimingMaster.TOTAL, ConvertToString(total / TICKS_PER_MILLISECOND), TimingMaster.MILLISECONDS));
                 message.Append(getDisplayString(TimingMaster.STANDARD_DEVIATION, ConvertToString(StandardDeviation / TICKS_PER_MILLISECOND), TimingMaster.MILLISECONDS));
                 message.Append(getDisplayString(TimingMaster.MIN, ConvertToString(min / TICKS_PER_MILLISECOND), TimingMaster.MILLISECONDS));

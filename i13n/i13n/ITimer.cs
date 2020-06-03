@@ -46,6 +46,18 @@ namespace i13n
 
 
         /// <summary>
+        /// The number of times this time has been started.
+        /// </summary>
+        long StartCount { get; set; }
+
+
+        /// <summary>
+        /// The number of time this timer has been stopped.
+        /// </summary>
+        long StopCount { get; set; }
+
+
+        /// <summary>
         /// Start this timer collecting datum. 
         /// </summary>
         public void Start();
