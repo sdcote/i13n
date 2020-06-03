@@ -3,12 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "i13n", "i13n\i13n.csproj", "{F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "i13n", "i13n\i13n.csproj", "{F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "i13n.Test", "i13n.Test\i13n.Test.csproj", "{AD1FABFA-85F4-4C6F-93B5-A722748BC45B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "i13n.Test", "i13n.Test\i13n.Test.csproj", "{AD1FABFA-85F4-4C6F-93B5-A722748BC45B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A} = {F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "i13n.Demo", "i13n.Demo\i13n.Demo.csproj", "{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,10 @@ Global
 		{AD1FABFA-85F4-4C6F-93B5-A722748BC45B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD1FABFA-85F4-4C6F-93B5-A722748BC45B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD1FABFA-85F4-4C6F-93B5-A722748BC45B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
