@@ -2,7 +2,7 @@
 
 namespace i13n
 {
-    public class AbstractTimer : ITimer
+    public abstract class AbstractTimer : ITimer
     {
         private const long TICKS_PER_MILLISECOND = 10000;
         private const long TICKS_PER_SECOND = TICKS_PER_MILLISECOND * 1000;
@@ -14,7 +14,7 @@ namespace i13n
         /// </summary>
         public bool IsRunning { get; set; }
 
-        public long Accrued { get; protected set; }
+        public long Accrued { get; set; }
 
         /// <summary>
         /// The master timer that accumulates our data.
