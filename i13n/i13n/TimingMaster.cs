@@ -25,7 +25,6 @@ namespace i13n
         private static readonly string AVG = "Avg";
         private static readonly string STANDARD_DEVIATION = "Std Dev";
         private static readonly string ACTIVE = "Active";
-        private static readonly string AVGACTIVE = "Avg Active";
         private static readonly string MAXACTIVE = "Max Active";
         private static readonly string FIRSTACCESS = "First Access";
         private static readonly string LASTACCESS = "Last Access";
@@ -33,12 +32,12 @@ namespace i13n
         /// <summary>
         /// How many timers are currently active
         /// </summary>
-        private long totalActive = 0;
+        private long activeCounter = 0;
 
         /// <summary>
         /// The total number of ticks accrued by stopped timers so far.
         /// </summary>
-        long accrued;
+        private long total;
 
         /// <summary>
         /// The smallest increment to the accrued total
@@ -55,28 +54,35 @@ namespace i13n
         /// </summary>
         private int hits;
 
-        private long total; // TODO: How is this different from accrued? Have we re-factored too much?
-
         /// <summary>
         /// The sum of squares total used in standard deviation calculation
         /// </summary>
         private long sumOfSquares;
 
-
-        /** The number of global timers currently active. */
+        /// <summary>
+        /// The number of global timers currently active.
+        /// </summary>
         private static long globalCounter = 0;
-        /** The number of timers currently active. */
-        private long activeCounter = 0;
-        /** Flag indicating whether or not to store the first accessed time */
+
+        /// <summary>
+        /// Flag indicating whether or not to store the first accessed time
+        /// </summary>
         private bool isFirstAccess = true;
-        /** Epoch time in ticks when this timer was first accessed */
+
+        /// <summary>
+        /// Epoch time in ticks when this timer was first accessed
+        /// </summary>
         private long firstAccessTime = 0;
-        /** Epoch time in ticks when this timer was last accessed */
+
+        /// <summary>
+        /// Time in ticks when this timer was last accessed
+        /// </summary>
         private long lastAccessTime = 0;
+
+        /// <summary>
+        /// The maximum number of timers running at the same time.
+        /// </summary>
         private long maxActive = 0;
-
-
-
 
 
         /// <summary>
@@ -91,25 +97,29 @@ namespace i13n
             }
         }
 
-        /// <summary>
-        /// The average number of timers active at the same time.
-        /// </summary>
-        public double AvgActive {
-            get {
-                if (hits == 0) { return 0; }
-                else { return (double)totalActive / hits; }
-            }
-        }
 
         /// <summary>
         /// The name of the timer master.
         /// </summary>
         public string Name { get; set; }
 
+
         /// <summary>
         /// True indicates this master will return TimingTimers, false indicates null (no-op) timers will be returned.
         /// </summary>
         public bool Enabled { get; set; }
+
+
+        /// <summary>
+        /// Get the accrued number of ticks for all timers stopped in this master. Note there are 10,000 ticks to one millisecond, 10 ticks to a microsecond, or 1 tick = 100 nanoseconds)
+        /// </summary>
+        public long Accrued { get { return total; } }
+
+
+        /// <summary>
+        /// Get the number of times this timer (master) created and started a timer. This does not include start/stop requests at the timer level.
+        /// </summary>
+        public long Hits { get { return hits; } }
 
 
         /// <summary>
@@ -131,7 +141,6 @@ namespace i13n
         {
             if (value < min) { min = value; }
             if (value > max) { max = value; }
-            accrued += value;
             total += value;
             sumOfSquares += value * value;
         }
@@ -168,12 +177,7 @@ namespace i13n
                 activeCounter++;
                 TimingMaster.globalCounter++;
 
-                if (activeCounter > maxActive)
-                {
-                    maxActive = activeCounter;
-                }
-
-                totalActive += activeCounter;// really?
+                if (activeCounter > maxActive) { maxActive = activeCounter; }
 
                 long now = DateTime.Now.Ticks;
                 lastAccessTime = now;
@@ -197,7 +201,8 @@ namespace i13n
             {
                 activeCounter--;
                 TimingMaster.globalCounter--;
-                accrued += timer.Accrued;
+                Increase(timer.Accrued);
+                timer.Accrued = 0;
                 timer.StopCount++;
             }
         }
@@ -243,7 +248,6 @@ namespace i13n
             }
             message.Append(getDisplayString(TimingMaster.ACTIVE, ConvertToString(activeCounter), TimingMaster.NONE));
             message.Append(getDisplayString(TimingMaster.MAXACTIVE, ConvertToString(maxActive), TimingMaster.NONE));
-            message.Append(getDisplayString(TimingMaster.AVGACTIVE, ConvertToString(AvgActive), TimingMaster.NONE));
             message.Append(getDisplayString(TimingMaster.FIRSTACCESS, GetDateString(firstAccessTime), TimingMaster.NONE));
             message.Append(getDisplayString(TimingMaster.LASTACCESS, GetDateString(lastAccessTime), TimingMaster.NONE));
 

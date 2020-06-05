@@ -35,7 +35,7 @@ namespace i13n
 
 
         /// <summary>
-        /// Increase the time by the specified amount of Ticks.
+        /// Increase the accrued time by the specified amount of Ticks.
         /// </summary>
         /// <remarks><para>This is the method that keeps track of the various statistics being tracked.</para></remarks>
         /// <param name="value">The amount to increase the accrued value.</param>
@@ -48,8 +48,8 @@ namespace i13n
         public override void Start() {
             if (!IsRunning)
             {
-                StartTimeTicks = DateTime.Now.Ticks;
                 IsRunning = true;
+                StartTimeTicks = DateTime.Now.Ticks;
                 Master.Start(this);
             }
         }
@@ -57,9 +57,8 @@ namespace i13n
         public override void Stop() {
             if (IsRunning)
             {
-                Increase(TimeElapsedSinceLastStart());
-                Master.Increase(Accrued);
-                Master.Stop(this);
+                Increase(TimeElapsedSinceLastStart()); // update our accrued value
+                Master.Stop(this); // update values in the master
                 IsRunning = false;
             }
         }
