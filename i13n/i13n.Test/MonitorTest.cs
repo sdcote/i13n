@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System;
 
 namespace i13n.Test
 {
@@ -36,10 +37,7 @@ namespace i13n.Test
         public void MultipleTimers()
         {
             // Create a monitor. Normally this would be handled by dependency injection
-            Monitor monitor = new Monitor();
-
-            // Timing is disabled by default, enable it
-            monitor.IsTimingEnabled = true;
+            Monitor monitor = new Monitor { IsTimingEnabled = true };
 
             // Call the start timer method on the scorecard to start a timer with a 
             // correlating name
@@ -72,22 +70,66 @@ namespace i13n.Test
 
 
         [TestMethod]
+        public void SimpleTimer()
+        {
+            Monitor monitor = new Monitor();
+            monitor.IsTimingEnabled = true;
+            ITimer t1 = monitor.StartTimer("Demo");
+            Task.Delay(500).Wait();
+            t1.Stop();
+            Console.WriteLine("Final: " + t1.ToString());
+            Console.WriteLine("Master Accrued: " + ((TimingMaster)t1.Master).Accrued);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued >= 5000000);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued < 5500000); // 50ms leeway
+        }
+
+
+        [TestMethod]
+        public void StartStop()
+        {
+            Monitor monitor = new Monitor();
+            monitor.IsTimingEnabled = true;
+            ITimer t1 = monitor.StartTimer("Demo");
+            Task.Delay(500).Wait();
+            t1.Stop();
+            Console.WriteLine("Final: " + t1.ToString());
+            Console.WriteLine("Master Accrued: " + ((TimingMaster)t1.Master).Accrued);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued >= 5000000);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued < 5500000); // 50ms leeway
+
+            t1.Start();
+            Task.Delay(500).Wait();
+            t1.Stop();
+            Console.WriteLine("Final: " + t1.ToString());
+            Console.WriteLine("Master Accrued: " + ((TimingMaster)t1.Master).Accrued);
+            Assert.IsTrue(((TimingMaster)t1.Master).Hits == 1);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued >= 10000000);
+            Assert.IsTrue(((TimingMaster)t1.Master).Accrued < 10500000); // 50ms leeway
+
+        }
+
+
+        [TestMethod]
         public void ActiveTest()
         {
             Monitor monitor = new Monitor();
             monitor.IsTimingEnabled = true;
             ITimer t1 = monitor.StartTimer("Demo");
+            Console.WriteLine("Started: " + t1.ToString());
             t1.Stop();
+            Console.WriteLine("Stopped: " + t1.ToString());
+
             TimingMaster master = (TimingMaster)t1.Master;
 
             t1.Start();
             t1.Stop();
-            Task.Delay(500).Wait();
+            Console.WriteLine("Start|Stopped: " + t1.ToString());
+
             t1.Start();
+            Task.Delay(500).Wait();
             t1.Stop();
 
-            // Average Active should be 1
-            Debug.WriteLine("AverageActive: " + master.AvgActive);
+            Console.WriteLine("Final: " + t1.ToString());
         }
 
     }
