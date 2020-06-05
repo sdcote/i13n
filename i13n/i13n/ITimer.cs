@@ -30,7 +30,7 @@ namespace i13n
         /// <summary>
         /// The value of the datum collected.
         /// </summary>
-        public long Accrued { get; }
+        public long Accrued { get; set; }
 
 
         /// <summary>
