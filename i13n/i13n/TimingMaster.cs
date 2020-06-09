@@ -11,7 +11,8 @@ namespace i13n
     /// </summary>
     /// <remarks>
     /// <para>This class is used to summarize all the timers in its list.</para>
-    /// <para>Timer Master can be enabled and disabled. This allows some timers to track timing while others ignore timing operations by returing NullTimers which ignore processing.</para>
+    /// <para>Timer Master can be enabled and disabled. This allows some timers to track timing while others ignore timing 
+    /// operations by returing NullTimers which ignore processing.</para>
     /// </remarks>
     public class TimingMaster : ITimerMaster
     {
@@ -30,9 +31,9 @@ namespace i13n
         private static readonly string LASTACCESS = "Last Access";
 
         /// <summary>
-        /// How many timers are currently active
+        /// How many timers are currently active.
         /// </summary>
-        private long activeCounter = 0;
+        private int activeCounter = 0;
 
         /// <summary>
         /// The total number of ticks accrued by stopped timers so far.
@@ -40,12 +41,12 @@ namespace i13n
         private long total;
 
         /// <summary>
-        /// The smallest increment to the accrued total
+        /// The smallest increment to the accrued total.
         /// </summary>
         private long min = Int64.MaxValue;
 
         /// <summary>
-        /// The largest increment to the accrued total
+        /// The largest increment to the accrued total.
         /// </summary>
         private long max = Int64.MinValue;
 
@@ -55,7 +56,7 @@ namespace i13n
         private int hits;
 
         /// <summary>
-        /// The sum of squares total used in standard deviation calculation
+        /// The sum of squares total used in standard deviation calculation.
         /// </summary>
         private long sumOfSquares;
 
@@ -65,24 +66,24 @@ namespace i13n
         private static long globalCounter = 0;
 
         /// <summary>
-        /// Flag indicating whether or not to store the first accessed time
+        /// Flag indicating whether or not to store the first accessed time.
         /// </summary>
         private bool isFirstAccess = true;
 
         /// <summary>
-        /// Epoch time in ticks when this timer was first accessed
+        /// Epoch time in ticks when this timer was first accessed.
         /// </summary>
         private long firstAccessTime = 0;
 
         /// <summary>
-        /// Time in ticks when this timer was last accessed
+        /// Time in ticks when this timer was last accessed.
         /// </summary>
         private long lastAccessTime = 0;
 
         /// <summary>
-        /// The maximum number of timers running at the same time.
+        /// The maximum number of timers running concurrently.
         /// </summary>
-        private long maxActive = 0;
+        private int maxActive = 0;
 
 
         /// <summary>
@@ -119,7 +120,42 @@ namespace i13n
         /// <summary>
         /// Get the number of times this timer (master) created and started a timer. This does not include start/stop requests at the timer level.
         /// </summary>
-        public long Hits { get { return hits; } }
+        public int Hits { get { return hits; } }
+
+        /// <summary>
+        /// The average number of milliseconds spent in this timer.
+        /// </summary>
+        public long Average { get { return AverageTime / TICKS_PER_MILLISECOND; } }
+
+        /// <summary>
+        /// The total number of milliseconds spent in all instances of this timer.
+        /// </summary>
+        public long Total { get { return total / TICKS_PER_MILLISECOND; } }
+
+        /// <summary>
+        /// The maximum number of milliseconds spent in this timer.
+        /// </summary>
+        public long Maximum { get { return max / TICKS_PER_MILLISECOND; } }
+
+        /// <summary>
+        /// The minimum number of milliseconds spent in this timer.
+        /// </summary>
+        public long Minimum { get { return min / TICKS_PER_MILLISECOND; } }
+
+        /// <summary>
+        /// The standard deviation of time, in milliseconds, spent in all instances of this timer.
+        /// </summary>
+        public long StandardDeviation { get { return StdDev / TICKS_PER_MILLISECOND; } }
+
+        /// <summary>
+        /// The number of timers currently active in this master.
+        /// </summary>
+        public int Active { get { return activeCounter; } }
+
+        /// <summary>
+        /// The maximum number of instances of this timer active at one time.
+        /// </summary>
+        public int MaxActive { get { return maxActive;  } }
 
 
         /// <summary>
@@ -150,7 +186,7 @@ namespace i13n
         /// Access the current standard deviation for all stopped timers using the Sum of Squares algorithm.
         /// </summary>
         /// <returns>The amount of one standard deviation of all the interval times.</returns>
-        public long StandardDeviation {
+        public long StdDev {
             get {
                 long stdDeviation = 0;
                 if (hits > 1)
@@ -167,7 +203,7 @@ namespace i13n
 
 
         /// <summary>
-        /// Start a timer in the context for this timer master.
+        /// Start a timer in the context of this timer master.
         /// </summary>
         /// <param name="timer">The timer to start</param>
         public void Start(ITimer timer)
@@ -192,7 +228,7 @@ namespace i13n
         }
 
         /// <summary>
-        /// Stop a timer in the context for this timer master.
+        /// Stop a timer in the context of this timer master.
         /// </summary>
         /// <param name="timer">The timer to stop</param>
         public void Stop(ITimer timer)
