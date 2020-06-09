@@ -10,7 +10,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "i13n.Test", "i13n.Test\i13n
 		{F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A} = {F75A335C-ECA3-4DA0-BCA4-2A5DBE78323A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "i13n.Demo", "i13n.Demo\i13n.Demo.csproj", "{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "i13n.Demo", "i13n.Demo\i13n.Demo.csproj", "{A5B5B0DC-3967-4501-B5B9-8FD7158D8AF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ADDABE84-2605-4072-A5E4-03E33C60CE48}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
